@@ -11,6 +11,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 import models
+# from models import motorcycles
 
 @app.route('/cars', methods=['GET'])
 def index():
@@ -63,12 +64,34 @@ def addNew():
     else:
         return "this is not a post, you probably did GET"
 
-@app.route('/delete/<int:id>')
-def delete(id):
-    models.motorcycles.query.filter_by(id=id).delete()
-    db.session.commit()
-    pass
 
+@app.route('/update/<int:carId>', methods=['GET', 'PATCH'])
+def patch(carId):
+    if request.method == 'PATCH':
+        newItem = json.loads(request.data)
+        itemToUpdate = models.cars.query.get(carId)
+
+        itemToUpdate.make = newItem["make"]
+        itemToUpdate.model = newItem["model"]
+        itemToUpdate.year = newItem["year"]
+
+        db.session.commit()
+
+        print("inside IF")
+    return "we are working on patching"
+
+
+@app.route('/delete/<int:id>', methods=['GET', 'DELETE'])
+def delete(id):
+    if request.method == 'DELETE':
+        print("Inside DELETE")
+        delItem = models.motorcycles.query.get(id).serialize
+        print(delItem)
+        db.session.delete(delItem)
+        db.session.commit()
+        return "hello delete"
+    else:
+        return "You are not very DELETE-Y"
 
 
 if __name__ == '__main__':
