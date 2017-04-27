@@ -1,6 +1,8 @@
 # import sqlite3
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+import json
+
 
 #app config
 app = Flask(__name__)
@@ -9,7 +11,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 import models
-# from models import cars
 
 @app.route('/cars', methods=['GET'])
 def index():
@@ -51,6 +52,22 @@ def bikes():
 def specificBike(id):
     return jsonify(data=[models.motorcycles.query.get(id).serialize])
 
+@app.route('/postnew', methods=['GET', 'POST'])
+def addNew():
+    if request.method == 'POST':
+        print("above json loads")
+        x = json.loads(request.data)
+        print(x["id"])
+        print(x["body"])
+        return request.data
+    else:
+        return "this is not a post, you probably did GET"
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    models.motorcycles.query.filter_by(id=id).delete()
+    db.session.commit()
+    pass
 
 
 
