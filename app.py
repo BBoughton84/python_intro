@@ -52,13 +52,13 @@ def bikes():
 def specificBike(id):
     return jsonify(data=[models.motorcycles.query.get(id).serialize])
 
-@app.route('/postnew', methods=['GET', 'POST'])
+@app.route('/bikepostnew', methods=['GET', 'POST'])
 def addNew():
     if request.method == 'POST':
-        print("above json loads")
-        x = json.loads(request.data)
-        print(x["id"])
-        print(x["body"])
+        incomingObject = json.loads(request.data)
+        toSave = models.motorcycles(incomingObject["manufacture"], incomingObject["model"], incomingObject["size"], incomingObject["year"])
+        db.session.add(toSave)
+        db.session.commit()
         return request.data
     else:
         return "this is not a post, you probably did GET"
