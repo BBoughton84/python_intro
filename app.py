@@ -1,6 +1,7 @@
 # import sqlite3
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 import json
 
 
@@ -9,6 +10,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost:5432/cars'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+engine = create_engine('postgres://localhost:5432/cars')
+
 
 import models
 # from models import motorcycles
@@ -81,14 +84,13 @@ def patch(carId):
     return "we are working on patching"
 
 
-@app.route('/delete/<int:id>', methods=['GET', 'DELETE'])
-def delete(id):
+@app.route('/delete/<int:deleteId>', methods=['GET', 'DELETE'])
+def delete(deleteId):
     if request.method == 'DELETE':
-        print("Inside DELETE")
-        delItem = models.motorcycles.query.get(id).serialize
-        print(delItem)
-        db.session.delete(delItem)
-        db.session.commit()
+
+        engine.execute('DELETE from "motorcycles" where id=(%s)', deleteId)
+
+        # db.session.commit()
         return "hello delete"
     else:
         return "You are not very DELETE-Y"
