@@ -16,7 +16,7 @@ db.session.add(car)
 car1 = cars('Chevy', 'SUV', 2017)
 car2 = cars('Benz', 'Convertable', 2018)
 car3 = cars('Lincoln', 'Limo', 2019)
-car4 = cars('Lexus', 'Luxury', 2011)
+car4 = cars('Lexus', 'Super Luxo', 2011)
 
 db.session.add(car1)
 db.session.add(car2)
